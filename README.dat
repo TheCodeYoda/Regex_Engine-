@@ -1,0 +1,59 @@
+FINE TECHNIQUES ASSIGNMENT 3: Building a REGEX engine
+---------------------------------------------------------------------------------------------------------------------------------------
+
+This is an extended version of sir's code with the additional capability of mimng the span utility of "re" module in python.
+
+Functionalities implemented for re engine:
+
+1)Anchor(^,$) (Already implemented by sir)
+2)Non-greedy and greedy *
+3)greedy +
+4)?
+4)character classes support [a-z][A-Z][0-9] and individual character class support
+5)\d(digit macro),\w(word character macro)
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Implementation specifics:
+
+The main functions used for matching is match() and match_here() which is identical to the implemented version but takes two extra integer pointers called start and end to mantain the index of the matches.The start index is incremented till match_here succeeds for the first time then we increment end Then the final indexes are calculated with start as reference i.e (start,start+end-1).Point to be noted is that all macros character classes,greedy and non-greedy detection are handled in match_here then once these cases are encountered we call the corresponding functions to handle them.
+
+Greedy star/plus(*,+) implementation:
+
+We have 2 while loops to accomplish this the first while greedily matches till the match fails that is another character is encountered or end of text is reached now the text_i pointer is at the end or the rightmost character match.Now we have to ensure that even though it is greedy it has to try to match the whole pattern,We cannot blindly perform the rightmost match and then continue the pattern, to handle this we have the second while loop which helps in backtracking,essentially what it does is once the rightmost match is reached we decrement text_i and check recursively (using match_here() fxn) whether we can match the rest of the pattern, If we can we return 1 else we return 0.Note: for greedy + it is the same as star but we have to atleast match one char This can be handled using equalities.
+
+Question mark(?) implementation:
+
+It is exactly same as above but instead of having a while loop we have if statements in place as it should match pat 0 or 1 times.
+
+Non-greedy star(*?):
+
+Sir has already implemented this version Here we dont greedily match the rightmost whenever we can match the rest of pat we stop and return.
+
+Note: I have implemented various instances of the above 4 functions, but the core logic is same it is just that it is meant for macros and character classes like match_star_digit,match_star_dot etc.
+
+Character classes implementation:
+
+We have 4 main functions:
+
+1)is_az() - checks whether given character is within a-z using ascii values
+2)is_AZ() - checks whether given character is within A-Z using ascii values
+3)is_09() - checks whether given character is within 0-9 using ascii values
+4)is_ch() - checks whether given character is equialent to another given character
+
+Now we have a function called is_characterclass() which on encountering a ']' will parse backwards till it encounters a '[' as it parses if it finds z-a(in reverse) meaning it has detected a-z it calls is_az similarly for other character classes.The results of these are stored in a variable called flag which bitwise ors(|) these cases and decides the result. It is parsed in a reverse manner because when we parse we have to support for * in case of character classes we cannot just pass a character as it is a class we have to compute this using ascii ranges.
+
+Macros such as \d,\w are also implemented using the 4 funtions above,macth_here upon detecting a backslash checks if it is a macro or not if it is then:
+\d uses is_09
+\w uses is_az()|is_AZ|is_09|is_ch('_') [a-zA-Z0-9_]
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+escaping is handled for +,*,.,\ we have flags like flag_plus flag_star, flag_fot to implement this this is detected in match_here and is handled using the above implementations.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
