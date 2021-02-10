@@ -1,7 +1,5 @@
-FINE TECHNIQUES ASSIGNMENT 3: Building a REGEX engine
+Building a REGEX engine
 ---------------------------------------------------------------------------------------------------------------------------------------
-
-This is an extended version of sir's code with the additional capability of mimng the span utility of "re" module in python.
 
 Functionalities implemented for re engine:
 
